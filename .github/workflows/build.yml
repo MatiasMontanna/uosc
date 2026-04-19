@@ -1,0 +1,63 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build binaries
+        run: |
+          mkdir -p src/uosc/bin
+          echo "Building for Windows..."
+          GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o src/uosc/bin/ziggy-windows.exe src/ziggy/ziggy.go
+          echo "Building for Linux..."
+          GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o src/uosc/bin/ziggy-linux src/ziggy/ziggy.go
+          echo "Building for macOS..."
+          GOOS=darwin GOARCH=amd64 go build -ldflags "-s -w" -o src/uosc/bin/ziggy-darwin src/ziggy/ziggy.go
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries
+          path: src/uosc/bin/*
+          retention-days: 5
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build binaries
+        run: |
+          mkdir -p src/uosc/bin
+          GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o src/uosc/bin/ziggy-windows.exe src/ziggy/ziggy.go
+          GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o src/uosc/bin/ziggy-linux src/ziggy/ziggy.go
+          GOOS=darwin GOARCH=amd64 go build -ldflags "-s -w" -o src/uosc/bin/ziggy-darwin src/ziggy/ziggy.go
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: src/uosc/bin/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
