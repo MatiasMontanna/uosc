@@ -221,31 +221,6 @@ function ass_mt:rect(ax, ay, bx, by, opts)
 	self:draw_stop()
 end
 
--- Gradient Rectangle (horizontal gradient from color1 to color2).
----@param ax number
----@param ay number
----@param bx number
----@param by number
----@param opts? {color1?: string; color2?: string; opacity?: number; steps?: number}
-function ass_mt:gradient_rect(ax, ay, bx, by, opts)
-	opts = opts or {}
-	local steps = opts.steps or 10
-	local opacity = opts.opacity or 1
-	local width = bx - ax
-	if width <= 0 then return end
-	
-	for i = 0, steps - 1 do
-		local t = i / steps
-		local x1 = ax + width * t
-		local x2 = ax + width * (t + 1) / steps
-		local r = clamp(0, round(tonumber('0x' .. (opts.color1 or fg):sub(5, 6)) * (1 - t) + tonumber('0x' .. (opts.color2 or fg):sub(5, 6)) * t), 255)
-		local g = clamp(0, round(tonumber('0x' .. (opts.color1 or fg):sub(3, 4)) * (1 - t) + tonumber('0x' .. (opts.color2 or fg):sub(3, 4)) * t), 255)
-		local b = clamp(0, round(tonumber('0x' .. (opts.color1 or fg):sub(1, 2)) * (1 - t) + tonumber('0x' .. (opts.color2 or fg):sub(1, 2)) * t), 255)
-		local color = string.format('%02x%02x%02x', b, g, r)
-		self:rect(x1, ay, x2, by, {color = color, opacity = opacity})
-	end
-end
-
 -- Circle.
 ---@param x number
 ---@param y number

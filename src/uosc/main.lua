@@ -17,7 +17,7 @@ require('lib/std')
 --[[ OPTIONS ]]
 
 defaults = {
-	timeline_style = 'bar',
+	timeline_style = 'line',
 	timeline_line_width = 2,
 	timeline_size = 40,
 	progress = 'windowed',
@@ -28,7 +28,6 @@ defaults = {
 	timeline_step = '5',
 	timeline_cache = true,
 	timeline_heatmap = 'overlay',
-	timeline_gradient = 'no',
 
 	controls =
 	'menu,gap,<video,audio>subtitles,<has_many_audio>audio,<has_many_video>video,<has_many_edition>editions,<stream>stream-quality,gap,space,<video,audio>speed,space,shuffle,loop-playlist,loop-file,gap,prev,items,next,gap,fullscreen',
@@ -149,8 +148,6 @@ local config_defaults = {
 		error = serialize_rgba('ff616e').color,
 		match = serialize_rgba('69c5ff').color,
 		heatmap = serialize_rgba('00adee').color,
-		gradient_start = serialize_rgba('ff0000').color,
-		gradient_end = serialize_rgba('ff69b4').color,
 	},
 	opacity = {
 		timeline = 0.9,

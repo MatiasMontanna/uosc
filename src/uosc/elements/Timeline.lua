@@ -266,15 +266,7 @@ function Timeline:render()
 
 	-- Progress
 	local function draw_progress()
-		if options.timeline_gradient == 'yes' and not is_line then
-			ass:gradient_rect(fax, fay, fbx, fby, {
-				color1 = config.color.gradient_start,
-				color2 = config.color.gradient_end,
-				opacity = config.opacity.position,
-			})
-		else
-			ass:rect(fax, fay, fbx, fby, {opacity = config.opacity.position})
-		end
+		ass:rect(fax, fay, fbx, fby, {opacity = config.opacity.position})
 	end
 
 	-- Youtube heatmap
